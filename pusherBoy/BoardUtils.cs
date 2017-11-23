@@ -121,10 +121,15 @@ namespace Pusherboy
             return String.Join(",", res2);
         }
 
-        public static int[] MoveInArray(int section, int[] array, out int outSection)
+        //because we know the absolute position of the incoming
+        //pos represents the original pos.  it should be fairly easy to handle maintaining this
+        //so that we can do orthogonality checking.
+        public static int[] MoveInArray(int pos, int section, int[] array, out int outSection, out int endpos, out int pushsize)
         {
+            endpos = pos;
+            pushsize = 0;
             outSection = section;
-            if (section == 0 || array[section - 1] > 0)
+            if (section == 0 || array[section - 1] > 0) //hackily determine the resulting section.
             {
                 outSection++;
             }
@@ -132,10 +137,11 @@ namespace Pusherboy
             var newrow = new List<int>(array);
             newrow.RemoveAt(section); //-2, 2, -1
             newrow[section] = newrow[section] - 1;//the gap. -3S,2,-1
+            endpos = endpos + -1 * newrow[section]; //-3 is exactly how far to the right it moved.
             newrow.Insert(section + 1, 0); //-3S,0,2,-1
-            if (newrow[section + 2] > 1) //hit greater than 1, will push.
+            if (newrow[section + 2] > 1) //hit greater than 1, will pushsize.
             {
-                if (newrow[section + 3] > 0) //double bump
+                if (newrow[section + 3] > 0) //double pushsize
                 {
                     newrow[section + 2] += newrow[section + 3] - 1; //shrink the gap on the other side //
                     newrow.RemoveAt(section + 3);
@@ -152,6 +158,7 @@ namespace Pusherboy
                         newrow[section + 3]++; //shrink the gap on the other side
                     }
                 }
+                pushsize = newrow[section + 2];
             }
             else //-3S,0,1,-1
             {
@@ -184,7 +191,6 @@ namespace Pusherboy
             }
             return res;
         }
-
         /// <summary>
         /// This is different than the other one.  This adds by absolute sum.
         /// what section actually means is a little unclear.  section is zero indexed.

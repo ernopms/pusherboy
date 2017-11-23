@@ -35,7 +35,7 @@ namespace PushTest
      */
 
         [TestMethod]
-        public void TestGeneral()
+        public void TestBoardMovement()
         {
             var b = GetBoard();
             b.SetBallPosition(3, 1);
@@ -98,117 +98,143 @@ namespace PushTest
         public void TestMovement1()
         {
             var row = new[] {0, -2, 2, -1};
-            var arr = BoardUtils.MoveInArray(0, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 0, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {-3, 0, 1});
             Assert.AreEqual(1, outSection);
+            Assert.AreEqual(7, endpos);
+            Assert.AreEqual(1, pushsize);
         }
 
         [TestMethod]
         public void TestMovement2()
         {
             var row = new[] {0, -1, 2, -1};
-            var arr = BoardUtils.MoveInArray(0, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 0, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {-2, 0, 1});
             Assert.AreEqual(1, outSection);
+            Assert.AreEqual(6, endpos);
+            Assert.AreEqual(1, pushsize);
         }
 
         [TestMethod]
         public void TestMovement3()
         {
             var row = new[] {0, -2, 2, -2};
-            var arr = BoardUtils.MoveInArray(0, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 0, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {-3, 0, 1, -1});
             Assert.AreEqual(1, outSection);
+            Assert.AreEqual(7, endpos);
+            Assert.AreEqual(1, pushsize);
         }
 
         [TestMethod]
         public void TestMovement4()
         {
             var row = new[] {0, -2, 2, -1};
-            var arr = BoardUtils.MoveInArray(0, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 0, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {-3, 0, 1});
             Assert.AreEqual(1, outSection);
+            Assert.AreEqual(7, endpos);
+            Assert.AreEqual(1, pushsize);
         }
 
         [TestMethod]
         public void TestMovement5()
         {
             var row = new[] {-1, 0, -2, 2, -1};
-            var arr = BoardUtils.MoveInArray(1, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 1, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {-4, 0, 1});
             Assert.AreEqual(1, outSection);
+            Assert.AreEqual(7, endpos);
+            Assert.AreEqual(1, pushsize);
         }
 
         [TestMethod]
         public void TestMovement5b()
         {
             var row = new[] {-1, 0, -1, 2, 2, -1};
-            var arr = BoardUtils.MoveInArray(1, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 1, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {-3, 0, 3, -1});
             Assert.AreEqual(1, outSection);
+            Assert.AreEqual(6, endpos);
+            Assert.AreEqual(3, pushsize);
         }
 
         [TestMethod]
         public void TestMovement5c()
         {
             var row = new[] {-1, 0, -1, 2, 1, -1};
-            var arr = BoardUtils.MoveInArray(1, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 1, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {-3, 0, 2, -1});
             Assert.AreEqual(1, outSection);
+            Assert.AreEqual(6, endpos);
+            Assert.AreEqual(2, pushsize);
         }
 
         [TestMethod]
         public void TestMovement5d()
         {
             var row = new[] {-1, 0, -1, 2, 1, -3};
-            var arr = BoardUtils.MoveInArray(1, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 1, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {-3, 0, 2, -3});
             Assert.AreEqual(1, outSection);
+            Assert.AreEqual(6, endpos);
+            Assert.AreEqual(2, pushsize);
         }
 
         [TestMethod]
         public void TestMovement5e()
         {
             var row = new[] {-1, 0, -1, 1, 1, -3};
-            var arr = BoardUtils.MoveInArray(1, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 1, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {-3, 0, 1, -3});
             Assert.AreEqual(1, outSection);
+            Assert.AreEqual(6, endpos);
+            Assert.AreEqual(0, pushsize);
         }
 
         [TestMethod]
         public void TestMovement5f()
         {
             var row = new[] {1, 0, -1, 1, 1, -3};
-            var arr = BoardUtils.MoveInArray(1, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 1, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {1, -2, 0, 1, -3});
             Assert.AreEqual(2, outSection);
+            Assert.AreEqual(6, endpos);
+            Assert.AreEqual(0, pushsize);
         }
 
         [TestMethod]
         public void TestMovement5g()
         {
             var row = new[] {1, -1, 0, -2, 1, 2, -3};
-            var arr = BoardUtils.MoveInArray(2, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 2, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {1, -4, 0, 2, -3});
             Assert.AreEqual(2, outSection);
+            Assert.AreEqual(7, endpos);
+            Assert.AreEqual(0, pushsize);
         }
 
         [TestMethod]
         public void TestMovement6()
         {
             var row = new[] {-1, 2, -7, 2, 2, 0, -2, 2, -1};
-            var arr = BoardUtils.MoveInArray(5, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 5, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {-1, 2, -7, 2, 2, -3, 0, 1});
             Assert.AreEqual(6, outSection);
+            Assert.AreEqual(7, endpos);
+            Assert.AreEqual(1, pushsize);
         }
 
         [TestMethod]
         public void TestMovement7()
         {
             var row = new[] {-1, 2, -7, 2, 2, 0, -2, 2, -10};
-            var arr = BoardUtils.MoveInArray(5, row, out var outSection);
+            var arr = BoardUtils.MoveInArray(4, 5, row, out var outSection, out int endpos, out int pushsize);
             S(arr, new[] {-1, 2, -7, 2, 2, -3, 0, 1, -9});
             Assert.AreEqual(6, outSection);
+            Assert.AreEqual(7, endpos);
+            Assert.AreEqual(1, pushsize);
         }
 
         [TestMethod]
@@ -453,11 +479,11 @@ namespace PushTest
                 return;
             }
 
-            Console.WriteLine($"actual:  {p(actual)}\nexpected:{p(expected)}");
-            Assert.IsFalse(true, $"actual:  {p(actual)}\nexpected:{p(expected)}");
+            Console.WriteLine($"actual:  {P(actual)}\nexpected:{P(expected)}");
+            Assert.IsFalse(true, $"actual:  {P(actual)}\nexpected:{P(expected)}");
         }
 
-        private string p(int[] input)
+        private string P(int[] input)
         {
             return string.Join(",", input.Select(el => el.ToString()));
         }

@@ -16,7 +16,7 @@ namespace Pusherboy
         public int LevelNumber { get; set; }
         public int BoardX { get; set; }
         public int BoardY { get; set; }
-        private const string _Pattern = @"param name='FlashVars' value='x=(\d+)&y=(\d+)&board=([a-z\.,]+)";
+        private const string Pattern = @"param name='FlashVars' value='x=(\d+)&y=(\d+)&board=([a-z\.,]+)";
 
         //The location - in board state represented by a zero.
         public BallPosition BallPosition { get; private set; }
@@ -107,22 +107,29 @@ namespace Pusherboy
             int ys = 0;
             int xp = 0;
             int yp = 0;
+            int pushsize = 0; //if you push a bunch of boxes to the next call, how many is it?
+            //zero means you hit a 1.  this ties in with havin
             switch (d)
             {
                 //we know the position, and direction.
                 //we need to update 
                 case Direction.D:
-                    Cols[BallPosition.X] = BoardUtils.MoveInArray(BallYSection, Cols[BallPosition.X], out ys);
+                    //clean up the place i left from
+                    //don't we need to know the result of this so we can adjust the corresponding row to yp
+                    Cols[BallPosition.X] = BoardUtils.MoveInArray(BallPosition.X, BallYSection, Cols[BallPosition.X], out ys, out yp, out pushsize);
 
                     Rows[BallPosition.Y] = BoardUtils.RemoveZeroAtSectionFromArray(BallYSection, Rows[BallPosition.Y]);
 
+                    //don't we need to know the output position at this point?
+
+                    //clean up the place i bumped into
                     //we are fixing up the xs
                     //we moved down.  this is actually "bump into row at position"
                     BumpIntoArrayAtPosition(Rows[BallPosition.Y], BallPosition.X, out xp);
                     yp = BoardUtils.SumPositionBeforeZero(Cols[BallPosition.X]);
                     break;
                 case Direction.U:
-                    Cols[BallPosition.X] = BoardUtils.MoveInArray(Cols[BallPosition.X].Length - BallYSection,  Cols[BallPosition.X].Reverse().ToArray(), out ys);
+                    Cols[BallPosition.X] = BoardUtils.MoveInArray(BallPosition.X, Cols[BallPosition.X].Length - BallYSection,  Cols[BallPosition.X].Reverse().ToArray(), out ys, out yp, out pushsize);
                     
                     //also have to remove zeros from the orthogonals!
                     Rows[BallPosition.Y] = BoardUtils.RemoveZeroAtSectionFromArray(BallYSection, Rows[BallPosition.Y]);
@@ -131,13 +138,13 @@ namespace Pusherboy
                     break;
                 
                 case Direction.R:
-                    Rows[BallPosition.Y] = BoardUtils.MoveInArray(BallXSection,Rows[BallPosition.Y], out xs);
+                    Rows[BallPosition.Y] = BoardUtils.MoveInArray(BallPosition.Y, BallXSection, Rows[BallPosition.Y], out xs, out xp, out pushsize);
 
                     Rows[BallPosition.Y] = BoardUtils.RemoveZeroAtSectionFromArray(BallXSection, Cols[BallPosition.X]);
                     xp = BoardUtils.SumPositionBeforeZero(Rows[BallPosition.Y]);
                     break;
                 case Direction.L:
-                    Rows[BallPosition.Y] = BoardUtils.MoveInArray(Rows[BallPosition.Y].Length - BallXSection, Rows[BallPosition.Y].Reverse().ToArray(), out xs);
+                    Rows[BallPosition.Y] = BoardUtils.MoveInArray(BallPosition.Y, Rows[BallPosition.Y].Length - BallXSection, Rows[BallPosition.Y].Reverse().ToArray(), out xs, out xp, out pushsize);
                     xs = Rows[BallPosition.Y].Length - xs;
                     xp = BoardUtils.SumPositionBeforeZero(Rows[BallPosition.Y].Reverse());
 
@@ -186,7 +193,7 @@ namespace Pusherboy
 
         private void Setup(string pageData)
         {
-            var res = Regex.Match(pageData, _Pattern);
+            var res = Regex.Match(pageData, Pattern);
             if (res.Groups.Count != 4)
             {
                 throw new Exception("Invalid board.");
