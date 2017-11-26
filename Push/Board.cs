@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 //get a good testing system set up
 //get a board generator
 
-namespace Pusherboy
+namespace Push
 {
     public class Board
     {

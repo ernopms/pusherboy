@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Pusherboy;
+using Push;
 
 namespace PushTest
 {
@@ -150,7 +150,7 @@ namespace PushTest
         }
 
         [TestMethod]
-        public void TestMovement5b()
+        public void TestMovement5B()
         {
             var row = new[] {-1, 0, -1, 2, 2, -1};
             var arr = BoardUtils.MoveInArray(4, 1, row, out var outSection, out int endpos, out int pushsize);
@@ -161,7 +161,7 @@ namespace PushTest
         }
 
         [TestMethod]
-        public void TestMovement5c()
+        public void TestMovement5C()
         {
             var row = new[] {-1, 0, -1, 2, 1, -1};
             var arr = BoardUtils.MoveInArray(4, 1, row, out var outSection, out int endpos, out int pushsize);
@@ -172,7 +172,7 @@ namespace PushTest
         }
 
         [TestMethod]
-        public void TestMovement5d()
+        public void TestMovement5D()
         {
             var row = new[] {-1, 0, -1, 2, 1, -3};
             var arr = BoardUtils.MoveInArray(4, 1, row, out var outSection, out int endpos, out int pushsize);
@@ -183,7 +183,7 @@ namespace PushTest
         }
 
         [TestMethod]
-        public void TestMovement5e()
+        public void TestMovement5E()
         {
             var row = new[] {-1, 0, -1, 1, 1, -3};
             var arr = BoardUtils.MoveInArray(4, 1, row, out var outSection, out int endpos, out int pushsize);
@@ -194,7 +194,7 @@ namespace PushTest
         }
 
         [TestMethod]
-        public void TestMovement5f()
+        public void TestMovement5F()
         {
             var row = new[] {1, 0, -1, 1, 1, -3};
             var arr = BoardUtils.MoveInArray(4, 1, row, out var outSection, out int endpos, out int pushsize);
@@ -205,7 +205,7 @@ namespace PushTest
         }
 
         [TestMethod]
-        public void TestMovement5g()
+        public void TestMovement5G()
         {
             var row = new[] {1, -1, 0, -2, 1, 2, -3};
             var arr = BoardUtils.MoveInArray(4, 2, row, out var outSection, out int endpos, out int pushsize);
@@ -383,7 +383,7 @@ namespace PushTest
         }
 
         [TestMethod]
-        public void TestBallPlacementInArrayByPosition5b()
+        public void TestBallPlacementInArrayByPosition5B()
         {
             var arr = new[] {2, -2};
             arr = BoardUtils.AddZeroAtPositionInArray(2, arr, out int section);
@@ -437,7 +437,7 @@ namespace PushTest
         }
 
         [TestMethod]
-        public void TestBallPlacementInArrayByPosition10b()
+        public void TestBallPlacementInArrayByPosition10B()
         {
             var arr = new[] {-3};
             arr = BoardUtils.AddZeroAtPositionInArray(0, arr, out int section);
@@ -446,7 +446,7 @@ namespace PushTest
         }
 
         [TestMethod]
-        public void TestBallPlacementInArrayByPosition10c()
+        public void TestBallPlacementInArrayByPosition10C()
         {
             var arr = new[] {-3};
             arr = BoardUtils.AddZeroAtPositionInArray(1, arr, out int section);
@@ -455,7 +455,7 @@ namespace PushTest
         }
 
         [TestMethod]
-        public void TestBallPlacementInArrayByPosition10d()
+        public void TestBallPlacementInArrayByPosition10D()
         {
             var arr = new[] {-3};
             arr = BoardUtils.AddZeroAtPositionInArray(2, arr, out int section);

@@ -3,7 +3,7 @@
 //get a good testing system set up
 //get a board generator
 
-namespace Pusherboy
+namespace Push
 {
     public enum Direction : byte
     {

@@ -3,12 +3,12 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 
-namespace Pusherboy
+namespace Push
 {
     public class SolutionManager
     {
         const string username = "ernie";
-        const string password = "a519e085";
+        const string password = "";
         private int LevelNumber = 0;
 
         private readonly WebClient _WebClient;
