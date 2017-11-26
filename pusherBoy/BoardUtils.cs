@@ -120,7 +120,7 @@ namespace Pusherboy
 
             return String.Join(",", res2);
         }
-
+         
         //because we know the absolute position of the incoming
         //pos represents the original pos.  it should be fairly easy to handle maintaining this
         //so that we can do orthogonality checking.

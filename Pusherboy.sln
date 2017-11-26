@@ -1,13 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pushRunner", "pushRunner\pushRunner.csproj", "{9B056500-E45E-419E-A595-647497EA5B8A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8023C5ED-FD62-42C7-9395-AD8C8F55577F} = {8023C5ED-FD62-42C7-9395-AD8C8F55577F}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pusherboy", "pusherBoy\Pusherboy.csproj", "{8023C5ED-FD62-42C7-9395-AD8C8F55577F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PushTest", "PushTest\PushTest.csproj", "{2F97EBB3-58CF-40A5-A3A2-5BD4A716FAB5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8023C5ED-FD62-42C7-9395-AD8C8F55577F} = {8023C5ED-FD62-42C7-9395-AD8C8F55577F}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

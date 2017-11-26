@@ -1,0 +1,19 @@
+1. board generation
+	start at any square
+	add a "1" there
+	move in any direction
+	either:
+		if you hit into a catchment zone from the side, pull the related object to you and move the other direction
+		or stop at any point, add a 1, then move
+		
+catchment zones are: the 4 orthogonal points from a position, which can only be entered orthogonal to 
+
+    P
+   ECE
+   
+  For the point P, the south catchment zone can only be entered from the points E.
+  
+2. finish movement
+3. think about a better data structure - combined v&h of what i'm doing now?  the problem is any change distorts it so greatly.  still, it makes caching work well.  what's a nice way to convert
+
+4. deadends - a 1 needs either a 1 on the same row, or a 2 one row over, or a 3 2 rows over, etc. or the same thing on a column.  this can force certain 2s to require being moved in a certain direction.
