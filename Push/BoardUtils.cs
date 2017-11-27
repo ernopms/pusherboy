@@ -33,28 +33,53 @@ namespace Push
             }
         }
 
+        public static string ToChar(int el)
+        {
+            if (el < 0)
+            {
+                return new String('.', -1 * el);
+            }
+            else
+            {
+                return el.ToString();
+            }
+        }
+
         public static void Show3(this Board board)
         {
+            Console.WriteLine("Board Rows.");
+            System.Diagnostics.Debug.WriteLine("Board Rows.");
             foreach (var row in board.Rows)
             {
                 foreach (var el in row)
                 {
-                    if (el < 0)
-                    {
-                        Console.Write(new String('.', -1 * el));
-                    }
-                    else
-                    {
-                        Console.Write(el);
-                    }
+                    Console.Write(ToChar(el));
+                    System.Diagnostics.Debug.Write(ToChar(el));
                 }
                 Console.WriteLine();
+                System.Diagnostics.Debug.WriteLine("");
             }
         }
 
-        public static List<int[]> MakeRows(string input)
+        public static void Show4(this Board board)
         {
-            var rr = new List<int[]>();
+            Console.WriteLine("Board Cols.");
+            System.Diagnostics.Debug.WriteLine("Board Cols.");
+            foreach (var col in board.Cols)
+            {
+                foreach (var el in col)
+                {
+                    Console.WriteLine(ToChar(el));
+                    System.Diagnostics.Debug.Write(ToChar(el));
+                }
+                Console.WriteLine();
+                System.Diagnostics.Debug.WriteLine("");
+            }
+        }
+
+        public static List<List<int>> MakeRows(string input)
+        {
+            var rr = new List<List<int>>();
             //this sets up the rows.  now the hard part.
             foreach (var row in input.Split(','))
             {
@@ -85,7 +110,7 @@ namespace Push
                 {
                     res.Add(emptyCount);
                 }
-                rr.Add(res.ToArray());
+                rr.Add(res);
             }
             return rr;
         }
@@ -121,58 +146,114 @@ namespace Push
             return String.Join(",", res2);
         }
          
-        //because we know the absolute position of the incoming
-        //pos represents the original pos.  it should be fairly easy to handle maintaining this
-        //so that we can do orthogonality checking.
-        public static int[] MoveInArray(int pos, int section, int[] array, out int outSection, out int endpos, out int pushsize)
+        public static void MoveInArray(List<int> list, int section, out int sectionMoved, out int moved, out int pushsize)
         {
-            endpos = pos;
+            moved = 0;
             pushsize = 0;
-            outSection = section;
-            if (section == 0 || array[section - 1] > 0) //hackily determine the resulting section.
+            sectionMoved = 0;
+            if (section == 0 || list[section - 1] > 0) //hackily determine the resulting section.
             {
-                outSection++;
+                sectionMoved++;
             }
             //row: 0,-2, 2, -1. direction R ==> -4,0,1
-            var newrow = new List<int>(array);
-            newrow.RemoveAt(section); //-2, 2, -1
-            newrow[section] = newrow[section] - 1;//the gap. -3S,2,-1
-            endpos = endpos + -1 * newrow[section]; //-3 is exactly how far to the right it moved.
-            newrow.Insert(section + 1, 0); //-3S,0,2,-1
-            if (newrow[section + 2] > 1) //hit greater than 1, will pushsize.
+            
+            list.RemoveAt(section); //-2, 2, -1
+            list[section] = list[section] - 1;//the gap. -3S,2,-1
+            moved = moved + -1 * list[section]; //-3 is exactly how far to the right it moved.
+            list.Insert(section + 1, 0); //-3S,0,2,-1
+            if (list[section + 2] > 1) //hit greater than 1, will pushsize.
             {
-                if (newrow[section + 3] > 0) //double pushsize
+                if (list[section + 3] > 0) //double pushsize
                 {
-                    newrow[section + 2] += newrow[section + 3] - 1; //shrink the gap on the other side //
-                    newrow.RemoveAt(section + 3);
+                    list[section + 2] += list[section + 3] - 1; //shrink the gap on the other side //
+                    list.RemoveAt(section + 3);
                 }
                 else
                 {
-                    newrow[section + 2]--;
-                    if (newrow[section + 3] == -1)
+                    list[section + 2]--;
+                    if (list[section + 3] == -1)
                     {
-                        newrow.RemoveAt(section + 3);
+                        list.RemoveAt(section + 3);
                     }
                     else
                     {
-                        newrow[section + 3]++; //shrink the gap on the other side
+                        list[section + 3]++; //shrink the gap on the other side
                     }
                 }
-                pushsize = newrow[section + 2];
+                pushsize = list[section + 2];
             }
             else //-3S,0,1,-1
             {
-                newrow.RemoveAt(section + 2); //-7
+                list.RemoveAt(section + 2); //-7
             }
             if (section > 0)
             {
-                if (newrow[section - 1] < 0 && newrow[section] < 0)
+                if (list[section - 1] < 0 && list[section] < 0)
                 {
-                    newrow[section] += newrow[section - 1];
-                    newrow.RemoveAt(section - 1);
+                    list[section] += list[section - 1];
+                    list.RemoveAt(section - 1);
                 }
             }
-            return newrow.ToArray();
+        }
+
+        /// <summary>
+        /// we don't know the section we're adding to since this isn't aligned with ballPosition.
+        /// </summary>
+        public static void AddPushToListAt(List<int> list, int pushat, int pushsize)
+        {
+            if (pushsize == 0) //leave it untouched.
+            {
+                return;
+            }
+            // [-5], 3, 2 => [-2,2,-2]
+            var seen = 0;
+            var section = 0;
+            while (seen < pushat)
+            {
+                seen += list[section] > 0 ? 1 : -1 * list[section];
+                section += 1; //the NEXT section.
+            }
+            if (seen > pushat) //split
+            {
+                //pushing 3 at position 5
+                //3,-5,3
+                //seen is 8
+                //going to break up the -5
+                section--;
+                var removed = list[section];
+                list.RemoveAt(section);
+                var after = seen - pushat - 1;
+                var bef = -1*removed - after - 1;
+
+                if (after > 0)
+                {
+                    list.Insert(section,-1*after);
+                }
+                list.Insert(section, pushsize);
+                if (bef > 0)
+                {
+                    list.Insert(section,-1*  bef);
+                }
+            }
+            else //equal
+            {
+                if (list[section] > 0)
+                {
+                    list[section] += pushsize;
+                }
+                else
+                {
+                    if (list[section] == -1)
+                    {
+                        list[section]=pushsize; //just replace it.
+                    }
+                    else
+                    {
+                        list[section]+=1; //just replace it.
+                        list.Insert(section, pushsize); //-4,2,-2,2 => -4,2,P,-1,2
+                    }
+                }
+            }
         }
 
         public static int SumPositionBeforeZero(IEnumerable<int> array)
@@ -197,24 +278,22 @@ namespace Push
         /// 
         /// //this is very confusing - positive numbers represent single cells only!
         /// </summary>
-        public static int[] AddZeroAtPositionInArray(int pos, int[] array, out int section)
+        public static void AddZeroAtPositionInList(int pos, List<int> list, out int section)
         {
-            var newrow = new List<int>(array);
-
             var seen = 0;
             var mySection = 0;
             while (true)
             {
                 var next = 0;
-                if (array[mySection] > 0)
+                if (list[mySection] > 0)
                 {
                     next = next + 1;
                 }
                 else
                 {
-                    next = Math.Abs(array[mySection]);
+                    next = Math.Abs(list[mySection]);
                 }
-                if (seen + next > pos || mySection==array.Length-1)
+                if (seen + next > pos || mySection==list.Count-1)
                 {
                     break;
                 }
@@ -229,75 +308,68 @@ namespace Push
             //-2,2,-2  3 => 2section, 4 seen
             //-2,2,-2  4 => 2section, 4 seen 
 
-            if (array[mySection] >= 0)
+            if (list[mySection] >= 0)
             {
                 throw new Exception("Problem");
             }
             //we are sure that the section we see is negative.
             var before = pos - seen;
-            var after = -1*array[mySection] - before - 1;
+            var after = -1*list[mySection] - before - 1;
             section = mySection;
-            newrow.RemoveAt(mySection);
+            list.RemoveAt(mySection);
             if (after > 0)
             {
-                newrow.Insert(mySection, -1*after);
+                list.Insert(mySection, -1*after);
             }
-            newrow.Insert(mySection, 0);
+            list.Insert(mySection, 0);
 
             if (before > 0)
             {
-                newrow.Insert(mySection, -1*before);
+                list.Insert(mySection, -1*before);
                 section++;
             }
-
-            //we need to update this carefully.
-            
-            return newrow.ToArray();
         }
 
-        public static int[] RemoveZeroAtSectionFromArray(int section, int[] array)
+        public static void RemoveZeroAtSectionFromList(List<int> list, int section)
         {
-            var newrow = new List<int>(array);
-
             if (section > 0) //
             {
-                newrow.RemoveAt(section);
-                var bef = newrow[section - 1];
-                var aft = newrow[section];
+                list.RemoveAt(section);
+                var bef = list[section - 1];
+                var aft = list[section];
                 if (bef < 0 && aft < 0) //-1,0,-1 (-1,-1P)
                 {
-                    newrow.Insert(section, newrow[section] + newrow[section - 1] - 1); //-1,-3P,-1
-                    newrow.RemoveAt(section + 1);
-                    newrow.RemoveAt(section - 1);
+                    list.Insert(section, list[section] + list[section - 1] - 1); //-1,-3P,-1
+                    list.RemoveAt(section + 1);
+                    list.RemoveAt(section - 1);
                 }
                 else if (bef < 0 && aft > 0) //-1,0,1 (-1,1P)
                 {
-                    newrow[section - 1] = newrow[section - 1] - 1;
+                    list[section - 1] = list[section - 1] - 1;
                 }
                 else if (bef > 0 && aft < 0) // 1,0,-1 (1,-1P)
                 {
-                    newrow[section] = newrow[section] - 1;
+                    list[section] = list[section] - 1;
                 }
                 else if (bef > 0 && aft > 0) //1,0,1 (1,1P)
                 {
-                    newrow.Insert(section, -1);
+                    list.Insert(section, -1);
                 }
 
             }
             else //section==0
             {
-                newrow.RemoveAt(section);
+                list.RemoveAt(section);
                 // 0, 3 or 0,-3
-                if (newrow[section] < 0) // 0,-2 => -3
+                if (list[section] < 0) // 0,-2 => -3
                 {
-                    newrow[section] = newrow[section] - 1;
+                    list[section] = list[section] - 1;
                 }
                 else //0,3 => -1,3
                 {
-                    newrow.Insert(0, -1);
+                    list.Insert(0, -1);
                 }
             }
-            return newrow.ToArray();
         }
     }
 }
